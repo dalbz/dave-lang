@@ -1,0 +1,83 @@
+(Int @err) main () :
+  (print(foo()))
+
+(Int @ri, Float @rf) foo (Int @i, Float @j) : 
+  (5, 1.45)
+
+(Int @i) floor(Float @f, Int@i) :
+
+  (5)
+
+# user defined type
+type (Pair) : (Int @first, Int @second)
+
+(Pair @p) test1A () :
+  (Pair(2,3))
+
+# getting argument [@membername]
+(Int @first) testAccessA (Pair @p) :
+  ([@p][@first])
+
+# can use names or indexes 
+(Int @first) testAccessB (Pair @p) :
+  ([@p][0])
+
+(Int @first) testAccessC (Pair @p) :
+  ([0][0])
+
+# everything is a function! yay!
+# each function has inputs and outputs
+# each input has a fixed length
+# each output has a fixed length
+# everything has a fixed type 
+# would it be possible to do type aliasing? - probably
+# ex 
+#
+# def Color : 
+#   (int, int, int) 
+#
+# (Color) getColor (String) :
+#
+# Could I do "anonymous" types?
+#
+# def PairOfPairs : 
+#   ((Int, Int), (Int, Int))
+# 
+# namespaces?
+#
+# Io.print()
+# Sys.args()
+# State.get()
+#
+# How do users define their own? Java-like idiom? I think each file should get its own
+#
+# The concept of "State"
+#
+# Since everything is functional right now, some programs may need to have a concept of "state"
+# State.get() and State.set() act like an in-memory storage
+#
+# Symbols
+# To access portions of state, you would need some sort of lookup
+# Maybe State.define(@currentColor, Color)
+# state now has an allocation for a pointer to a Color that can be accessed with the symbol @currentColor
+#
+# (let's say foo returns an Int @i)
+# Getters
+# foo()[@i]
+#
+# Setters
+# foo(){@i, 5}
+# foo(){@i, bar()[@someOtherInt]}
+# 
+# Mutators
+# It's a pain in the ass to write the following:
+# foo(){@i, +(foo()[@i], 5)}
+#
+# Let's make a sort of alias!
+# foo()[@i] => |@i|
+# 
+# The pipes look at the current var in the setter 
+# foo(){@i, +(|@i|, 5)}
+#
+# All three of these behave like functions that have the same return type of whatever was there before
+# In this case, a var with an Int @i

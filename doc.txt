@@ -1,0 +1,4 @@
+Davelang is a strongly typed functional language. 
+The whole goal is to stricly enforce what a program does in order to produce consistent behavior. 
+Not as dynamic as LISPy languages in that functions are data are functions. Keeping that shit separate. Will try to incorporate the stuff that makes that powerful in some creative ways. 
+User can create any number of custom types. 
