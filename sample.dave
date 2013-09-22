@@ -30,18 +30,6 @@ type (Pair) : (Int @first, Int @second)
 # each input has a fixed length
 # each output has a fixed length
 # everything has a fixed type 
-# would it be possible to do type aliasing? - probably
-# ex 
-#
-# def Color : 
-#   (int, int, int) 
-#
-# (Color) getColor (String) :
-#
-# Could I do "anonymous" types?
-#
-# def PairOfPairs : 
-#   ((Int, Int), (Int, Int))
 # 
 # namespaces?
 #
@@ -81,3 +69,17 @@ type (Pair) : (Int @first, Int @second)
 #
 # All three of these behave like functions that have the same return type of whatever was there before
 # In this case, a var with an Int @i
+#
+# Unique approach to polymorphism
+# Type families!
+# A type is eligible to be in a type family if it has a member of the same name and type as another
+#
+# Cliche bullshit example:
+#
+# type (Dog) : (String @sound)
+# type (Cat) : (String @sound)
+# 
+# family (Animal) : (String @sound)
+#
+# It is pretty intuitive to see how this would be used - now you can pass Dogs and Cats into any method that takes an Animal. 
+# Can only access   

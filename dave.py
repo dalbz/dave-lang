@@ -25,22 +25,6 @@ else :
     input_file = open(str(sys.argv[1]))
     output_file = open(str(sys.argv[2]) + '.cpp', 'w+')
 
-    # write the boilerplate
-
-    output_file.write("""
-#include <iostream>
-#include <new>
-using namespace std;
-
-typedef struct {
-    int type;
-    void *value;
-} var;
-
-int main(int argc, const char* argv[]) {
-
-""")
-
     # parse the input file
 
     line_num = 1
@@ -60,6 +44,7 @@ int main(int argc, const char* argv[]) {
     # functions
 
     funcs = {}
+    func_order = []
 
     # reserved words
 
@@ -159,6 +144,7 @@ int main(int argc, const char* argv[]) {
                         syntax_error(line_num, line, 'Undefined type : ' + type_name)
 
                 funcs[fn_name] = {'args' : arg_members, 'rets' : ret_members}
+                func_order.append(fn_name)
 
                 print 'function def : ' + fn_name
                 print '  returns : ' + str(ret_list)
@@ -187,8 +173,8 @@ int main(int argc, const char* argv[]) {
 
                 if (m) :
                     rets = m.group(1).split(',')
-                    if (len(rets) != len(ret_list)) :
-                        syntax_error(body_start, lines[body_start - 1], 'Function must return ' + str(len(ret_list)) + ' value(s)')
+                    #if (len(rets) != len(ret_list)) :
+                    #    syntax_error(body_start, lines[body_start - 1], 'Function must return ' + str(len(ret_list)) + ' value(s)')
                 else :
                     syntax_error(body_start, lines[body_start - 1], 'Invalid function body')
 
@@ -253,12 +239,42 @@ int main(int argc, const char* argv[]) {
     print 'Types : ' 
     pp.pprint(types)
     print 'Functions : ' 
+    pp.pprint(func_order)
     pp.pprint(funcs)
 
-    # close the files
-    output_file.write('}\n')
+    # close the input file
 
     input_file.close()
+
+    # write the boilerplate
+
+    output_file.write("""
+#include <iostream>
+#include <new>
+using namespace std;
+
+typedef struct {
+    int type;
+    void *value;
+} var; 
+
+""")
+
+    # create all functions
+
+    for func_name in func_order :
+        if func_name != 'main' :
+            output_file.write('void ' + func_name + 
+                '(var *' + func_name + '_input, var *' + func_name + '_output) { }\n\n')
+
+
+    output_file.write("""int main(int argc, const char* argv[]) {
+
+""")
+
+    output_file.write('}\n')
+
+    
     output_file.close()
 
     # compile translated cpp file and delete it
@@ -272,7 +288,7 @@ int main(int argc, const char* argv[]) {
 
     print 'Executable created'
 
-    cmd = ['rm', str(sys.argv[2]) + '.cpp']
+    # cmd = ['rm', str(sys.argv[2]) + '.cpp']
 
     p = subprocess.Popen(cmd)  
     p.wait() 
